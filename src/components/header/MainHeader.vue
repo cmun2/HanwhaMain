@@ -27,8 +27,9 @@
     </div>
   </div>
 </template>
-<script>
-export default {
+<script lang="ts">
+import { defineComponent } from "vue";
+export default defineComponent({
   components: {},
   data() {
     return {
@@ -44,12 +45,13 @@ export default {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   unmounted() {},
   methods: {},
-};
+});
 </script>
 
 <style scoped lang="scss">
 .header {
   width: 100%;
+  height: 56px;
   background-color: #00adef;
   display: flex;
   justify-content: space-between;

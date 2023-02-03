@@ -4,12 +4,10 @@
       <MainHeader />
       <div class="page-content">
         <div class="page-container">
-          <div class="chart-summary">
-            <ChartActivity />
-          </div>
+          <ChartActivity :chartData="chartData" />
           <div class="prod-summary">
-            <MainEventHistory />
-            <MainRecentActivity />
+            <MainEventHistory :eventData="eventData" />
+            <MainRecentActivity :activityData="activityData" />
           </div>
         </div>
       </div>
@@ -23,6 +21,7 @@ import ChartActivity from "../components/chart/ChartActivity.vue";
 import MainEventHistory from "../components/eventHistory/MainEventHistory.vue";
 import MainHeader from "../components/header/MainHeader.vue";
 import MainRecentActivity from "../components/recentActivity/MainRecentActivity.vue";
+import JsonFile from "../components/sample/data.json";
 
 export default defineComponent({
   name: "HomeView",
@@ -32,13 +31,56 @@ export default defineComponent({
     MainRecentActivity,
     ChartActivity,
   },
+
+  setup() {
+    const chartData = JsonFile.chart.map((lists: object) => {
+      return lists;
+    });
+    const eventData = JsonFile.event.map((lists: object) => {
+      return lists;
+    });
+    const activityData = JsonFile.activity.map((lists: object) => {
+      return lists;
+    });
+    return {
+      chartData,
+      eventData,
+      activityData,
+    };
+  },
 });
 </script>
 
 <style scoped lang="scss">
-.container {
+.home {
   width: 100%;
   height: 100%;
-  font-size: 16px;
+}
+.container {
+  min-height: 100%;
+  width: 100%;
+  min-width: 1200px;
+}
+
+.page-content {
+  width: 100%;
+  position: relative;
+}
+
+.page-container {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1600px;
+  margin-top: 20px;
+  padding: 40px 50px 144px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.prod-summary {
+  display: flex;
+  justify-content: space-between;
+  width: 92%;
 }
 </style>

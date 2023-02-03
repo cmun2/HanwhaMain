@@ -1,8 +1,9 @@
 <template>
   <div></div>
 </template>
-<script>
-export default {
+<script lang="ts">
+import { defineComponent } from "vue";
+export default defineComponent({
   components: {},
   data() {
     return {
@@ -18,5 +19,5 @@ export default {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   unmounted() {},
   methods: {},
-};
+});
 </script>
