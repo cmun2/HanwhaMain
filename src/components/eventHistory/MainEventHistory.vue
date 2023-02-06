@@ -6,7 +6,7 @@
         class="event-box"
         :value="index"
         :key="index"
-        v-for="(event, index) in eventData"
+        v-for="(event, index) in dateMap"
         :event="event"
       >
         <div class="event-history">
@@ -35,7 +35,7 @@
 </template>
 <script lang="ts">
 import { defineComponent } from "vue";
-// import moment from "moment";
+import moment from "moment";
 export default defineComponent({
   name: "MainEventHistory",
   components: {},
@@ -48,8 +48,23 @@ export default defineComponent({
     },
   },
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  setup() {
-    // moment().format(props.eventData.createDt, "YYYY-MM-DD");
+  setup(props) {
+    const dateMap = props.eventData.map((data: any) => {
+      data.createDt = moment(data.createDt).format("DD[/]MM[/]YYYY h:mm");
+      // const newDate = moment(data.createDt).format("DD[/]MM[/]YYYY h:mm");
+      return data;
+    });
+
+    // const momentMap = props.eventData.filter((momentData: any) => {
+    //   momentData.createDt(...momentData.createDt, dateMap);
+    //   return momentData;
+    // });
+
+    // const momentMap
+
+    return { dateMap };
+
+    // props.eventData.replace();
   },
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   created() {},
