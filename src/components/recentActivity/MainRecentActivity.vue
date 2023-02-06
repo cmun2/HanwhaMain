@@ -6,7 +6,7 @@
         class="activity-box"
         :value="index"
         :key="index"
-        v-for="(activity, index) in activityData"
+        v-for="(activity, index) in dateMap"
         :activity="activity"
       >
         <div class="activity-history">
@@ -29,6 +29,7 @@
 </template>
 <script lang="ts">
 import { defineComponent } from "vue";
+import moment from "moment";
 export default defineComponent({
   name: "MainRecentActivity",
   components: {},
@@ -41,7 +42,14 @@ export default defineComponent({
     },
   },
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  setup() {},
+  setup(props) {
+    const dateMap = props.activityData.map((data: any) => {
+      data.createDt = moment(data.createDt).format("DD[/]MM[/]YYYY h:mm");
+      // const newDate = moment(data.createDt).format("DD[/]MM[/]YYYY h:mm");
+      return data;
+    });
+    return { dateMap };
+  },
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   created() {},
   // eslint-disable-next-line @typescript-eslint/no-empty-function
