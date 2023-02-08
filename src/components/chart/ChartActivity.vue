@@ -31,42 +31,42 @@
             }}</label>
           </div>
         </div>
-        <span>check: {{ checkedCountry }}</span>
-        <span>check: {{ allChecked }}</span>
+        <span>check: {{ totalCount }}</span>
+        <!-- <span>check: {{ checkedCountry }}</span>
+        <span>check: {{ allChecked }}</span> -->
       </div>
       <div class="option-result">
         <div class="count-total">
           <span
             >Product
-            <strong>0</strong>
+            <strong v-if="allChecked === true">{{ sumAllCount }}</strong>
+            <strong v-else>0</strong>
           </span>
           <span
             >Installed Last Week
-            <strong>0</strong>
+            <strong v-if="allChecked === true">{{ sumAllLastWeek }}</strong>
+            <strong v-else>0</strong>
           </span>
         </div>
-        <PieGraph :chartData="chartData" />
+        <PieGraph
+          :totalCount="totalCount"
+          :lastWeekCount="lastWeekCount"
+          :onlineNormalCount="onlineNormalCount"
+          :onlineWarningCount="onlineWarningCount"
+          :onlineErrorCount="onlineErrorCount"
+          :offlineNormalCount="offlineNormalCount"
+          :offlineWarningCount="offlineWarningCount"
+          :offlineErrorCount="offlineErrorCount"
+          :offlineIncompleteCount="offlineIncompleteCount"
+          :chartData="chartData"
+        />
       </div>
     </div>
-    <!-- <PieGraph /> -->
   </div>
 </template>
 <script lang="ts">
 import { defineComponent, reactive, watch, ref, Ref, computed } from "vue";
 import PieGraph from "./PieGraph.vue";
-// import * as HighCharts from "highcharts";
-
-// const defaultChartOption: HighCharts.Options = Object.freeze({
-//   chart: {
-//     type: "pie",
-//     height: "240px",
-//   },
-//   accessibility: {
-//     point: {
-//       valueSuffix: "%",
-//     },
-//   },
-// });
 
 export default defineComponent({
   components: {
@@ -82,30 +82,55 @@ export default defineComponent({
   },
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   setup(props, { emit }) {
-    const countryList = props.chartData.map((list: any) => {
+    const countryList: string = props.chartData.map((list: any) => {
       return list.countryCd;
     });
+
+    const totalCount: any = props.chartData.map((list: any) => {
+      return list.totalCount;
+    });
+    const lastWeekCount: any = props.chartData.map((list: any) => {
+      return list.lastWeekCount;
+    });
+    const onlineNormalCount: number = props.chartData.map((list: any) => {
+      return list.onlineNormalCount;
+    });
+    const onlineWarningCount: number = props.chartData.map((list: any) => {
+      return list.onlineWarningCount;
+    });
+    const onlineErrorCount: number = props.chartData.map((list: any) => {
+      return list.onlineErrorCount;
+    });
+    const offlineNormalCount: number = props.chartData.map((list: any) => {
+      return list.totalCount;
+    });
+    const offlineWarningCount: number = props.chartData.map((list: any) => {
+      return list.offlineWarningCount;
+    });
+    const offlineErrorCount: number = props.chartData.map((list: any) => {
+      return list.offlineErrorCount;
+    });
+    const offlineIncompleteCount: number = props.chartData.map((list: any) => {
+      return list.offlineIncompleteCount;
+    });
+
+    //배열로 뽑은 값을 더하기 위한 function
+    let sumAllCount: number = totalCount.reduce(
+      (a: number, b: number) => a + b
+    );
+    let sumAllLastWeek: number = lastWeekCount.reduce(
+      (a: number, b: number) => a + b
+    );
+
+    // let sumCountry: number = totalCount.filter(item => item === )
 
     let checkedCountry: Ref<string[]> = ref([]);
 
     for (let i = 0; i < countryList.length; i++) {
-      checkedCountry.value.push(String(countryList[i]));
+      checkedCountry.value.push(countryList[i]);
     }
 
     let allChecked = ref(true);
-
-    // const allClick = () => {
-    //   if (!allChecked.value && checkedCountry.value.length != 0) {
-    //     checkedCountry.value = [];
-    //     for (let i = 0; i < countryList.length; i++) {
-    //       checkedCountry.value.push(String(countryList[i]));
-    //     }
-    //     allChecked.value = true;
-    //   } else {
-    //     checkedCountry.value = [];
-    //     allChecked.value = false;
-    //   }
-    // };
 
     const allClick = () => {
       if (!allChecked.value) {
@@ -113,7 +138,7 @@ export default defineComponent({
           checkedCountry.value = [];
         }
         for (let i = 0; i < countryList.length; i++) {
-          checkedCountry.value.push(String(countryList[i]));
+          checkedCountry.value.push(countryList[i]);
         }
         allChecked.value = true;
       } else {
@@ -123,7 +148,7 @@ export default defineComponent({
     };
 
     const countryClick = () => {
-      console.log(checkedCountry.value);
+      // console.log(checkedCountry.value);
       if (checkedCountry.value.length === countryList.length) {
         allChecked.value = true;
       } else {
@@ -137,24 +162,24 @@ export default defineComponent({
       })
     );
 
-    console.log(checkedCountry);
-
     return {
+      sumAllCount,
+      sumAllLastWeek,
       allClick,
       allChecked,
       checkedCountry,
       selectedCountry,
       countryClick,
+      totalCount,
+      lastWeekCount,
+      onlineNormalCount,
+      onlineWarningCount,
+      onlineErrorCount,
+      offlineNormalCount,
+      offlineWarningCount,
+      offlineErrorCount,
+      offlineIncompleteCount,
     };
-
-    // let checkedAll = ref(true);
-    // const checkAll = () => {
-    //   !(checkedAll.value) {
-
-    //   }
-    // }
-
-    // const country = reactive({ props.chartData.countryCd: []})
   },
 });
 </script>

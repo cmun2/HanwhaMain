@@ -29,6 +29,7 @@ export default defineComponent({
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   setup(props, { emit }) {
     return {
+      props: {},
       chartOptions: {
         chart: {
           type: "pie",

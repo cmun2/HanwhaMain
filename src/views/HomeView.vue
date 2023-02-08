@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, computed } from "vue";
 import ChartActivity from "../components/chart/ChartActivity.vue";
 import MainEventHistory from "../components/eventHistory/MainEventHistory.vue";
 import MainHeader from "../components/header/MainHeader.vue";
@@ -36,6 +36,7 @@ export default defineComponent({
     const chartData = JsonFile.chart.map((lists: object) => {
       return lists;
     });
+
     const eventData = JsonFile.event.map((lists: object) => {
       return lists;
     });
