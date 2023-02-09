@@ -31,7 +31,7 @@
             }}</label>
           </div>
         </div>
-        <span>check: {{ totalCount }}</span>
+        <!-- <span>check: {{ totalCount }}</span> -->
         <!-- <span>check: {{ checkedCountry }}</span>
         <span>check: {{ allChecked }}</span> -->
       </div>
@@ -40,13 +40,14 @@
           <span
             >Product
             <strong v-if="allChecked === true">{{ sumAllCount }}</strong>
-            <strong v-else>0</strong>
+            <strong v-else>{{ totalproductCount.arrayCount }}</strong>
           </span>
           <span
             >Installed Last Week
             <strong v-if="allChecked === true">{{ sumAllLastWeek }}</strong>
-            <strong v-else>0</strong>
+            <strong v-else>{{ totalinstallCount.arrayCount }}</strong>
           </span>
+          <!-- <span>check: {{ sumCountry }}</span> -->
         </div>
         <PieGraph
           :totalCount="totalCount"
@@ -80,7 +81,7 @@ export default defineComponent({
       },
     },
   },
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
+
   setup(props, { emit }) {
     const countryList: string = props.chartData.map((list: any) => {
       return list.countryCd;
@@ -114,23 +115,40 @@ export default defineComponent({
       return list.offlineIncompleteCount;
     });
 
+    const checkedCountry: Ref<string[]> = ref([]);
+    const allChecked = ref(true);
+    const allCount = reactive({ total: [] });
+
     //배열로 뽑은 값을 더하기 위한 function
     let sumAllCount: number = totalCount.reduce(
       (a: number, b: number) => a + b
     );
+
     let sumAllLastWeek: number = lastWeekCount.reduce(
       (a: number, b: number) => a + b
     );
 
-    // let sumCountry: number = totalCount.filter(item => item === )
+    const sumArrayCount = (arr: number[]) =>
+      arr.reduce((a: number, b: number) => a + b, 0);
 
-    let checkedCountry: Ref<string[]> = ref([]);
+    const arrayCount = sumArrayCount(totalCount);
+    const totalproductCount = reactive({ arrayCount: arrayCount });
+    const totalinstallCount = reactive({ arrayCount: arrayCount });
+
+    // const sumArrayCount: number = totalCount.reduce((a: number, b: number) => a + b, 0)
+
+    //countryCd의 나라와 checkedCountry.value와 비교하여 같은 경우의 데이터파일의 totalCount의 합
+
+    // let sumCountry: number = props.chartData
+    //   .filter(
+    //     (item: { countryCd: any }) => item.countryCd === checkedCountry.value
+    //   )
+    //   .reduce((a: number, b: number) => a + b, 0);
+    // console.log(props.chartData.countryCd);
 
     for (let i = 0; i < countryList.length; i++) {
       checkedCountry.value.push(countryList[i]);
     }
-
-    let allChecked = ref(true);
 
     const allClick = () => {
       if (!allChecked.value) {
@@ -144,16 +162,26 @@ export default defineComponent({
       } else {
         checkedCountry.value = [];
         allChecked.value = false;
+        totalproductCount.arrayCount = 0;
+        totalinstallCount.arrayCount = 0;
       }
     };
 
     const countryClick = () => {
-      // console.log(checkedCountry.value);
       if (checkedCountry.value.length === countryList.length) {
         allChecked.value = true;
       } else {
         allChecked.value = false;
+        totalproductCount.arrayCount = 0;
+        totalinstallCount.arrayCount = 0;
       }
+
+      allCount.total = props.chartData.map((item: any) => {
+        if (checkedCountry.value.includes(item.countryCd)) {
+          totalproductCount.arrayCount += item.totalCount;
+          totalinstallCount.arrayCount += item.lastWeekCount;
+        }
+      });
     };
 
     const selectedCountry = reactive(
@@ -161,8 +189,22 @@ export default defineComponent({
         return emit("checkedCountry", checkedCountry.value);
       })
     );
+    // const countTotalValue = (checkedCountries: string[]) => {
+    //   console.log("check", checkedCountries);
+    // };
+
+    // const countTotalValue = () => {
+    //   allCount.total = props.chartData.map((item: any) => {
+    //     if (checkedCountry.value.includes(item.countryCd)) {
+    //       totalproductCount.arrayCount += item.totalCount;
+    //     }
+    //   });
+    // };
 
     return {
+      totalinstallCount,
+      totalproductCount,
+      arrayCount,
       sumAllCount,
       sumAllLastWeek,
       allClick,
@@ -202,7 +244,7 @@ export default defineComponent({
 }
 
 .option {
-  padding: 24px 30px 80px;
+  padding: 24px 20px 5px;
   background: #f9fafc;
   display: flex;
   flex-direction: row;
