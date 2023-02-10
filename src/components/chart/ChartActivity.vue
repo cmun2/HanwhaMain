@@ -40,21 +40,19 @@
           <span
             >Product
             <strong v-if="allChecked === true">{{ sumAllCount }}</strong>
-            <strong v-else>{{ totalproductCount.arrayCount }}</strong>
+            <strong v-else>{{ totalproductCount.arrayProductCount }}</strong>
           </span>
           <span
             >Installed Last Week
             <strong v-if="allChecked === true">{{ sumAllLastWeek }}</strong>
-            <strong v-else>{{ totalinstallCount.arrayCount }}</strong>
+            <strong v-else>{{ totalinstallCount.arrayInstallCount }}</strong>
           </span>
           <!-- <span>check: {{ sumCountry }}</span> -->
         </div>
         <PieGraph
-          :totalCount="totalCount"
-          :lastWeekCount="lastWeekCount"
-          :onlineNormalCount="onlineNormalCount"
-          :onlineWarningCount="onlineWarningCount"
-          :onlineErrorCount="onlineErrorCount"
+          :normalOn="totalonlineNormalCount.arrayOnNormalCount"
+          :warningOn="totalonlineWarningCount.arrayOnWarningCount"
+          :errorOn="totalonlineErrorCount.arrayOnErrorCount"
           :offlineNormalCount="offlineNormalCount"
           :offlineWarningCount="offlineWarningCount"
           :offlineErrorCount="offlineErrorCount"
@@ -93,25 +91,25 @@ export default defineComponent({
     const lastWeekCount: any = props.chartData.map((list: any) => {
       return list.lastWeekCount;
     });
-    const onlineNormalCount: number = props.chartData.map((list: any) => {
+    const onlineNormalCount: any = props.chartData.map((list: any) => {
       return list.onlineNormalCount;
     });
-    const onlineWarningCount: number = props.chartData.map((list: any) => {
+    const onlineWarningCount: any = props.chartData.map((list: any) => {
       return list.onlineWarningCount;
     });
-    const onlineErrorCount: number = props.chartData.map((list: any) => {
+    const onlineErrorCount: any = props.chartData.map((list: any) => {
       return list.onlineErrorCount;
     });
-    const offlineNormalCount: number = props.chartData.map((list: any) => {
+    const offlineNormalCount: any = props.chartData.map((list: any) => {
       return list.totalCount;
     });
-    const offlineWarningCount: number = props.chartData.map((list: any) => {
+    const offlineWarningCount: any = props.chartData.map((list: any) => {
       return list.offlineWarningCount;
     });
-    const offlineErrorCount: number = props.chartData.map((list: any) => {
+    const offlineErrorCount: any = props.chartData.map((list: any) => {
       return list.offlineErrorCount;
     });
-    const offlineIncompleteCount: number = props.chartData.map((list: any) => {
+    const offlineIncompleteCount: any = props.chartData.map((list: any) => {
       return list.offlineIncompleteCount;
     });
 
@@ -131,9 +129,27 @@ export default defineComponent({
     const sumArrayCount = (arr: number[]) =>
       arr.reduce((a: number, b: number) => a + b, 0);
 
-    const arrayCount = sumArrayCount(totalCount);
-    const totalproductCount = reactive({ arrayCount: arrayCount });
-    const totalinstallCount = reactive({ arrayCount: arrayCount });
+    const arrayProductCount = sumArrayCount(totalCount);
+    const arrayInstallCount = sumArrayCount(lastWeekCount);
+    const arrayOnNormalCount = sumArrayCount(onlineNormalCount);
+    const arrayOnWarningCount = sumArrayCount(onlineWarningCount);
+    const arrayOnErrorCount = sumArrayCount(onlineErrorCount);
+
+    const totalproductCount = reactive({
+      arrayProductCount: arrayProductCount,
+    });
+    const totalinstallCount = reactive({
+      arrayInstallCount: arrayInstallCount,
+    });
+    const totalonlineNormalCount = reactive({
+      arrayOnNormalCount: arrayOnNormalCount,
+    });
+    const totalonlineWarningCount = reactive({
+      arrayOnWarningCount: arrayOnWarningCount,
+    });
+    const totalonlineErrorCount = reactive({
+      arrayOnErrorCount: arrayOnErrorCount,
+    });
 
     // const sumArrayCount: number = totalCount.reduce((a: number, b: number) => a + b, 0)
 
@@ -162,8 +178,11 @@ export default defineComponent({
       } else {
         checkedCountry.value = [];
         allChecked.value = false;
-        totalproductCount.arrayCount = 0;
-        totalinstallCount.arrayCount = 0;
+        totalproductCount.arrayProductCount = 0;
+        totalinstallCount.arrayInstallCount = 0;
+        totalonlineNormalCount.arrayOnNormalCount = 0;
+        totalonlineWarningCount.arrayOnWarningCount = 0;
+        totalonlineErrorCount.arrayOnErrorCount = 0;
       }
     };
 
@@ -172,14 +191,21 @@ export default defineComponent({
         allChecked.value = true;
       } else {
         allChecked.value = false;
-        totalproductCount.arrayCount = 0;
-        totalinstallCount.arrayCount = 0;
+        totalproductCount.arrayProductCount = 0;
+        totalinstallCount.arrayInstallCount = 0;
+        totalonlineNormalCount.arrayOnNormalCount = 0;
+        totalonlineWarningCount.arrayOnWarningCount = 0;
+        totalonlineErrorCount.arrayOnErrorCount = 0;
       }
 
       allCount.total = props.chartData.map((item: any) => {
         if (checkedCountry.value.includes(item.countryCd)) {
-          totalproductCount.arrayCount += item.totalCount;
-          totalinstallCount.arrayCount += item.lastWeekCount;
+          totalproductCount.arrayProductCount += item.totalCount;
+          totalinstallCount.arrayInstallCount += item.lastWeekCount;
+          totalonlineNormalCount.arrayOnNormalCount += item.onlineNormalCount;
+          totalonlineWarningCount.arrayOnWarningCount +=
+            item.onlineWarningCount;
+          totalonlineErrorCount.arrayOnErrorCount += item.onlineErrorCount;
         }
       });
     };
@@ -202,9 +228,11 @@ export default defineComponent({
     // };
 
     return {
+      totalonlineNormalCount,
+      totalonlineWarningCount,
+      totalonlineErrorCount,
       totalinstallCount,
       totalproductCount,
-      arrayCount,
       sumAllCount,
       sumAllLastWeek,
       allClick,
@@ -331,10 +359,11 @@ export default defineComponent({
 .option-result {
   font-size: 14px;
   height: 360px;
+  box-sizing: border-box;
 
   .count-total {
     position: relative;
-    margin-top: 16px;
+    margin-top: 30px;
     padding: 0 0 25px;
     font-family: "actual", "Noto Sans KR";
     font-size: 12px;

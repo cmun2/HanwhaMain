@@ -7,7 +7,9 @@
       <span class="chart-count"></span>
     </div>
     <div class="chart-offline">
-      <div class="chart-container"></div>
+      <div class="chart-container">
+        <!-- <highcharts class="offline-pie" :options="chartOptions"></highcharts> -->
+      </div>
       <span class="chart-count"></span>
     </div>
   </div>
@@ -22,6 +24,9 @@ export default defineComponent({
     default: () => {
       return;
     },
+    normalOn: Number,
+    warningOn: Number,
+    errorOn: Number,
   },
   components: {
     highcharts: Chart,
@@ -29,7 +34,6 @@ export default defineComponent({
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   setup(props, { emit }) {
     return {
-      props: {},
       chartOptions: {
         chart: {
           type: "pie",
@@ -47,11 +51,50 @@ export default defineComponent({
         plotOptions: {
           pie: {
             // size: "100%",
+            dataLabels: {
+              enabled: true,
+            },
             allowPointSelect: true,
             cursor: "pointer",
+            showInLegend: true,
           },
         },
-        series: [{}],
+        series: [
+          {
+            type: "pie",
+            name: "",
+            colorByPoint: true,
+            innerSize: "0%",
+            data: [
+              {
+                name: "Chrome",
+                y: 74.77,
+                sliced: true,
+                selected: true,
+              },
+              {
+                name: "Edge",
+                y: 12.82,
+              },
+              {
+                name: "Firefox",
+                y: 4.63,
+              },
+              {
+                name: "Safari",
+                y: 2.44,
+              },
+              {
+                name: "Internet Explorer",
+                y: 2.02,
+              },
+              {
+                name: "Other",
+                y: 3.28,
+              },
+            ],
+          },
+        ],
         legend: {
           layout: "horizontal",
           align: "center",
@@ -73,10 +116,11 @@ export default defineComponent({
 </script>
 <style scoped lang="scss">
 .chart-wrap {
-  width: 100%;
   height: 250px;
   margin: 34px auto 0;
   display: flex;
+  box-sizing: border-box;
+  // box-sizing: border-box;
 
   .chart-online {
     flex: 1;
@@ -102,6 +146,10 @@ export default defineComponent({
   }
 
   .online-pie {
+    height: 280px;
+  }
+
+  .offline-pie {
     height: 280px;
   }
 }
